@@ -17,19 +17,17 @@ INDREF="02_reference/genome.fasta_bowtie2"		# Path to indexed reference director
 READS="04_trimmed_reads"
 ALIGN="05_aligned_bam"
 TEMP="99_tmp/"
-ID=""
 
 # Modules
-module load mugqic/bowtie2/2.2.6
+module load bowtie/2.3.4.1
 
 # Align reads
-
-for file in $(ls $READS/"$ID"*.fq | perl -pe 's/R[12]\_val_[12]\.fq//g') #| grep -v '.md5') 
+for file in $(ls $READS/*.fq | perl -pe 's/R[12]\_val_[12]\.fq//g') #| grep -v '.md5') 
 do
     base=$(basename $file)
 
     # Decompress files
-    gunzip "$READS"/"$ID"*fq.gz
+    gunzip "$READS"/*fq.gz
 
     # Align
     time /home/clem/00_soft/BSseeker2/bs_seeker2-align.py --input_1="$READS"/"$base"R1_val_1.fq --input_2="$READS"/"$base"R2_val_2.fq \
@@ -48,4 +46,4 @@ do
     rm <FASTQ FILE>
 done
 
-rm -r "$TEMP"/bs_seeker2_"$ID"*
+#rm -r "$TEMP"/bs_seeker2_"$ID"*
