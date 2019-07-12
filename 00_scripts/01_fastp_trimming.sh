@@ -30,8 +30,8 @@ do
         --correction \
         --trim_tail1=1 \
         --trim_tail2=1 \
-        --json $OUTPUT/"$name" \
-        --html $OUTPUT/"$name"  \
+        --json $OUTPUT/"$name".json \
+        --html $OUTPUT/"$name".html  \
         --report_title="$name"report.html
 
 done 2>&1 | tee 98_log_files/"$TIMESTAMP"_fastp.log
