@@ -1,7 +1,7 @@
 #!/bin/bash
 
-# 2 CPU
-# 10 Go
+# 4 CPU
+# 20 Go
 
 # keep some info
 TIMESTAMP=$(date +%Y-%m-%d_%Hh%Mm%Ss)
@@ -12,38 +12,42 @@ echo "$SCRIPT"
 cp "$SCRIPT" "$LOG_FOLDER"/"$TIMESTAMP"_"$NAME"
 
 # Define options
-REF="02_reference/genome.fasta" 			# Genomic reference .fasta
-INDREF="02_reference/genome.fasta_bowtie2"		# Path to indexed reference directory
-READS="04_trimmed_reads"
-ALIGN="05_aligned_bam"
-TEMP="99_tmp/"
+GENOME="02_reference/genome.fasta" 			# Genomic reference .fasta
+INDEXED_GENOME="02_reference/genome.fasta_bowtie2"		# Path to indexed reference directory
+TRIMMED_FOLDER="04_trimmed_reads"
+ALIGNED_FOLDER="05_aligned_bam"
+TEMP_FOLDER="99_tmp/"
 
 # Modules
 module load bowtie/2.3.4.1
 
 # Align reads
-for file in $(ls $READS/*.fq | perl -pe 's/R[12]\_val_[12]\.fq//g') #| grep -v '.md5') 
+for file in $(ls $TRIMMED_FOLDER/*.fastq.gz | perl -pe 's/_R[12].*//g' | sort -u) #| grep -v '.md5') 
 do
     base=$(basename $file)
 
     # Decompress files
-    gunzip "$READS"/*fq.gz
+    gunzip -k "$TRIMMED_FOLDER"/"$base"_R1.fastq.gz
+    gunzip -k "$TRIMMED_FOLDER"/"$base"_R2.fastq.gz
 
     # Align
-    time /home/clem/00_soft/BSseeker2/bs_seeker2-align.py --input_1="$READS"/"$base"R1_val_1.fq --input_2="$READS"/"$base"R2_val_2.fq \
-        --genome=$REF --temp_dir="$TEMP" \
-        --output="$ALIGN"/"$base".bam \
+    bs_seeker2-align.py \
+        --input_1="$TRIMMED_FOLDER"/"$base"_R1.fastq \
+        --input_2="$TRIMMED_FOLDER"/"$base"_R2.fastq \
+        --genome=$GENOME --temp_dir="$TEMP_FOLDER" \
+        --output="$ALIGNED_FOLDER"/"$base".bam \
         --aligner=bowtie2 \
-        --bt2-p 16 \
+        --bt2-p 4 \
         --bt2--end-to-end \
         --mismatches=4 \
         --split_line=500000
         #--output-format=bam \
-        #--db="$INDREF" \
-        #--temp_dir="$TEMP" 
+        #--db="$INDEXED_GENOME" \
+        #--temp_dir="$TEMP_FOLDER" 
 
     # Cleanup
-    rm <FASTQ FILE>
+    rm "$TRIMMED_FOLDER"/"$base"_R*.fastq
 done
 
-#rm -r "$TEMP"/bs_seeker2_"$ID"*
+# Cleanup temp folder
+rm -r "$TEMP_FOLDER"/*
