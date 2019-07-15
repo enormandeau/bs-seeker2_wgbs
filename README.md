@@ -1,20 +1,19 @@
-## WGBS data preparation
+# BSSeeker2 WGBS pipeline
 
-Pipeline to clean, align, prepare sequence and call methylation for WGBS (Whole Genome Bisulfite Sequencing) data.
+Clean, align, prepare sequences, and call methylation for Whole Genome Bisulfite Sequencing (WGBS) data
+
+## Attribution
+
+This code was originally forked from Clement Rougeux's repository
+(https://github.com/crougeux/wgbs_methylation_calling)
 
 ## Dependencies
 
 [trim_galore!](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/)
 
-[BEseeker2](https://github.com/BSSeeker/BSseeker2)
-(see specific BSseeker2 requirements)
+[BSSeeker2](https://github.com/BSSeeker/BSseeker2)
+(see specific BSSeeker2 requirements)
 
 ## Usage
 Put your genomic reference as well as your raw data in the corresponding directories.
 Then, EDIT properly the scripts to fit your working environment and your data.
-
-## WARNING
-These scripts were developed for particular servers. 
-Use at your own risk...killing!
-Keep in mind that some modifications will be required for some circumstancies.
-
