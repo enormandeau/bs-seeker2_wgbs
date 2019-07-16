@@ -12,8 +12,8 @@ echo "$SCRIPT"
 cp "$SCRIPT" "$LOG_FOLDER"/"$TIMESTAMP"_"$NAME"
 
 # Define options
-GENOME="02_reference/genome.fasta" 			# Genomic reference .fasta
-INDEXED_GENOME="02_reference/genome.fasta_bowtie2"		# Path to indexed reference directory
+GENOME="02_reference/genome.fasta"  # Genomic reference .fasta
+INDEXED_GENOME="02_reference"       # Path to indexed reference directory
 TRIMMED_FOLDER="04_trimmed_reads"
 ALIGNED_FOLDER="05_aligned_bam"
 TEMP_FOLDER="99_tmp/"
@@ -34,7 +34,9 @@ do
     bs_seeker2-align.py \
         --input_1="$TRIMMED_FOLDER"/"$base"_R1.fastq \
         --input_2="$TRIMMED_FOLDER"/"$base"_R2.fastq \
-        --genome=$GENOME --temp_dir="$TEMP_FOLDER" \
+        --genome=$GENOME \
+        --db="$INDEXED_GENOME" \
+        --temp_dir="$TEMP_FOLDER" \
         --output="$ALIGNED_FOLDER"/"$base".bam \
         --aligner=bowtie2 \
         --bt2-p 4 \
@@ -42,7 +44,6 @@ do
         --mismatches=4 \
         --split_line=500000
         #--output-format=bam \
-        #--db="$INDEXED_GENOME" \
         #--temp_dir="$TEMP_FOLDER" 
 
     # Cleanup
